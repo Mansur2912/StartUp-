@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damu AI | Интеллектуальная экосистема обучения</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8FAFC;
+            --surface: #FFFFFF;
+            --accent: #6366F1;
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --teal: #14B8A6;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --border: #E2E8F0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body { 
+            background-color: var(--bg); color: var(--text-main); 
+            font-family: 'Inter', sans-serif; line-height: 1.7; overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .logo { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        .ambient-blob {
+            position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.15;
+            animation: drift 20s infinite alternate ease-in-out;
+        }
+        .blob-1 { width: 500px; height: 500px; background: var(--accent); top: -10%; left: -10%; }
+        .blob-2 { width: 400px; height: 400px; background: var(--teal); bottom: 10%; right: -10%; }
+        @keyframes drift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(80px, 100px) scale(1.1); } }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 25px; }
+
+        header {
+            padding: 15px 0; position: fixed; width: 100%; top: 0; z-index: 1000;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+        .logo::before { content: ''; width: 10px; height: 10px; background: var(--teal); border-radius: 50%; }
+
+        .lang-switch { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 700; font-size: 0.85rem; background: var(--bg); padding: 8px 15px; border-radius: 50px; border: 1px solid var(--border); }
+        .toggle-box { width: 40px; height: 20px; background: var(--border); border-radius: 50px; position: relative; transition: 0.3s; }
+        .toggle-dot { width: 14px; height: 14px; background: white; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: 0.3s; }
+        .is-en .toggle-box { background: var(--accent); }
+        .is-en .toggle-dot { left: 23px; }
+
+        section { min-height: 85vh; padding: 120px 0 60px; display: flex; align-items: center; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 25px; letter-spacing: -1.5px; }
+        h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 25px; text-align: center; width: 100%; }
+        .section-desc { text-align: center; max-width: 800px; margin: 0 auto 50px; font-size: 1.15rem; color: var(--text-muted); }
+
+        .btn {
+            display: inline-block; padding: 18px 40px; background: var(--accent); color: white;
+            border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem;
+            box-shadow: 0 10px 25px var(--accent-glow); transition: 0.3s; cursor: pointer; border: none;
+        }
+        .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 35px var(--accent-glow); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .floating-img {
+            width: 100%; max-width: 420px; display: block; margin: 0 auto;
+            animation: float-img 6s infinite ease-in-out;
+            filter: drop-shadow(0 30px 40px rgba(99, 102, 241, 0.2));
+        }
+        @keyframes float-img { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        .split-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
+        
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-top: 40px; }
+        .card { 
+            background: var(--surface); padding: 45px; border-radius: 35px; 
+            border: 1px solid var(--border); transition: 0.4s;
+        }
+        .card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 25px 50px rgba(99, 102, 241, 0.1); }
+        .card img { width: 64px; height: 64px; margin-bottom: 25px; }
+        .card h3 { margin-bottom: 15px; font-size: 1.5rem; color: var(--accent); }
+
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; width: 100%; }
+        .member-card {
+            background: var(--surface); padding: 40px; border-radius: 30px; border: 1px solid var(--border);
+            text-align: center; transition: 0.3s;
+        }
+        .member-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .member-card h4 { font-size: 1.4rem; color: var(--accent); margin-bottom: 10px; }
+        .member-card p { font-size: 0.95rem; color: var(--text-muted); }
+
+        .form-wrapper { 
+            max-width: 850px; margin: 0 auto; background: var(--surface); 
+            padding: 60px; border-radius: 40px; border: 1px solid var(--border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .input-box { display: flex; flex-direction: column; gap: 8px; }
+        input { padding: 16px; border-radius: 12px; border: 2px solid var(--border); font-size: 1rem; font-family: inherit; background: var(--bg); }
+        input:focus { border-color: var(--accent); outline: none; background: white; }
+
+        footer { text-align: center; padding: 40px; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 50px; }
+
+        @media (max-width: 900px) {
+            .split-layout { grid-template-columns: 1fr; text-align: center; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+
+    <header>
+        <div class="container header-content">
+            <div class="logo">DAMU AI</div>
+            <div class="lang-switch" id="lang-trigger">
+                <span>RU</span>
+                <div class="toggle-box"><div class="toggle-dot"></div></div>
+                <span>EN</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <section id="hero" class="reveal active">
+            <div class="split-layout">
+                <div>
+                    <h1 id="hero-title">Твое время — твой главный <span style="color: var(--accent);">капитал.</span></h1>
+                    <p id="hero-desc">Современные социальные сети созданы для захвата вашего внимания, но Damu AI возвращает контроль вам. Мы строим мост между развлечением и развитием, превращая хаотичное потребление контента в структурированный учебный процесс. <br><br>Наша миссия — помочь студентам и профессионалам по всему миру использовать мощь искусственного интеллекта для мгновенного усвоения знаний из видео, статей и чатов, не отказываясь от привычного цифрового образа жизни.</p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px;">
+                        <a href="#details" class="btn" id="hero-btn">Изучить функции</a>
+                        <a href="#team" class="btn" style="background: transparent; color: var(--text-main); border: 2px solid var(--border); box-shadow: none;" id="hero-team-btn">Наша команда</a>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/2103/2103130.png" alt="AI Brain" class="floating-img">
+                </div>
+            </div>
+        </section>
+
+        <section id="details" class="reveal" style="flex-direction: column;">
+            <h2 id="d-title">Как работает Damu AI?</h2>
+            <p class="section-desc" id="d-desc">Мы используем передовые алгоритмы нейросетей, чтобы интегрировать обучение в твою повседневную цифровую жизнь, делая этот процесс незаметным и увлекательным.</p>
+            
+            <div class="feature-grid">
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712139.png" alt="Video icon">
+                    <h3 id="f1-t">Video-to-Guide</h3>
+                    <p id="f1-d">Наш ИИ анализирует любое видео (от Reels до лекций на YouTube) и мгновенно создает структурированный учебный гайд. Вместо того чтобы просто смотреть, ты получаешь список ключевых тезисов, определений и практических советов.</p>
+                </div>
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2620/2620620.png" alt="Guard icon">
+                    <h3 id="f2-t">AI Focus Guard</h3>
+                    <p id="f2-d">Умный страж твоего внимания. Система отслеживает время в соцсетях и мягко предлагает переключиться на интерактивный квиз, если ты начинаешь "залипать" без пользы.</p>
+                </div>
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2462/2462719.png" alt="Messenger icon">
+                    <h3 id="f3-t">Mini-Messenger</h3>
+                    <p id="f3-d">Общайся с единомышленниками. Встроенный мессенджер позволяет находить партнеров по учебе. Выделяйся уникальными аватарками, купленными за коины.</p>
+                </div>
+                <div class="card">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2150/2150244.png" alt="Coins icon">
+                    <h3 id="f4-t">Reward System</h3>
+                    <p id="f4-d">Учись и зарабатывай. Получай Damu Coins за тесты и задания. Трать их на Premium-подписку, аватарки или бустеры опыта.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="team" class="reveal" style="flex-direction: column;">
+            <h2 id="t-title">Наша Команда</h2>
+            <p class="section-desc" id="t-desc">Мы — команда молодых инноваторов, объединенных общей целью: сделать цифровое потребление осознанным и продуктивным.</p>
+            
+            <div class="team-grid">
+                <div class="member-card">
+                    <h4>Amir Turgynbay</h4>
+                    <p id="tm1">Лидер команды. Победитель кейс-чемпионатов и олимпиад по бизнесу. Обладает стратегическим видением и лидерскими качествами.</p>
+                </div>
+                <div class="member-card">
+                    <h4>Mansur Rapilbek</h4>
+                    <p id="tm2">Технический разработчик. Специализируется на интеграции AI-моделей и разработке сложной архитектуры приложения.</p>
+                </div>
+                <div class="member-card">
+                    <h4>Nurtas Toiganbayev</h4>
+                    <p id="tm3">Product Lead. Эксперт по взаимодействию с сообществом и развитию продукта. Отвечает за пользовательский опыт.</p>
+                </div>
+                <div class="member-card">
+                    <h4>Eskendir Bahyt</h4>
+                    <p id="tm4">Data Analyst. Занимается анализом данных и обеспечением точности работы алгоритмов Damu AI.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="register" class="reveal">
+            <div class="form-wrapper">
+                <div id="form-container">
+                    <h2 id="form-title">Присоединяйся к сообществу</h2>
+                    <p class="section-desc" id="form-desc">Заполни форму, чтобы получить ранний доступ к бета-тестированию и стартовый бонус на свой счет.</p>
+                    
+                    <form id="damu-form" action="https://formspree.io/f/mnjwyewd" method="POST">
+                        <div class="form-grid">
+                            <div class="input-box"><label id="l-name">ФИО</label><input type="text" name="name" placeholder="Твое имя" required></div>
+                            <div class="input-box"><label id="l-country">Страна</label><input type="text" name="country" placeholder="Казахстан" required></div>
+                            <div class="input-box"><label id="l-age">Возраст</label><input type="number" name="age" placeholder="14" required></div>
+                            <div class="input-box"><label id="l-email">Почта</label><input type="email" name="email" placeholder="mail@example.com" required></div>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;" id="form-btn">Зарегистрироваться</button>
+                    </form>
+                </div>
+
+                <div id="success-message" style="display: none; text-align: center; padding: 40px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/148/148767.png" width="80" style="margin-bottom: 20px;">
+                    <h2 id="success-title">Вы успешно зарегистрированы!</h2>
+                    <p id="success-text">Мы свяжемся с вами в ближайшее время. Добро пожаловать в Damu AI!</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p id="footer-text">© 2026 Damu AI Ecosystem. Global Student Initiative.</p>
+    </footer>
+
+    <script>
+        const langTrigger = document.getElementById('lang-trigger');
+        let isEn = false;
+
+        const translations = {
+            ru: {
+                h_title: "Твое время — твой главный <span style='color: var(--accent);'>капитал.</span>",
+                h_desc: "Современные социальные сети созданы для захвата вашего внимания, но Damu AI возвращает контроль вам. Мы строим мост между развлечением и развитием, превращая хаотичное потребление контента в структурированный учебный процесс. <br><br>Наша миссия — помочь студентам и профессионалам по всему миру использовать мощь искусственного интеллекта для мгновенного усвоения знаний из видео, статей и чатов, не отказываясь от привычного цифрового образа жизни.",
+                h_btn: "Изучить функции",
+                h_team: "Наша команда",
+                d_title: "Как работает Damu AI?",
+                d_desc: "Мы используем передовые алгоритмы нейросетей, чтобы интегрировать обучение в твою повседневную цифровую жизнь, делая этот процесс незаметным и увлекательным.",
+                f1_t: "Video-to-Guide", 
+                f1_d: "Наш ИИ анализирует любое видео (от Reels до лекций на YouTube) и мгновенно создает структурированный учебный гайд. Вместо того чтобы просто смотреть, ты получаешь список ключевых тезисов, определений и практических советов.",
+                f2_t: "AI Focus Guard", 
+                f2_d: "Умный страж твоего внимания. Система отслеживает время в соцсетях и мягко предлагает переключиться на интерактивный квиз, если ты начинаешь 'залипать' без пользы.",
+                f3_t: "Mini-Messenger", 
+                f3_d: "Общайся с единомышленниками. Встроенный мессенджер позволяет находить партнеров по учебе. Выделяйся уникальными аватарками, купленными за коины.",
+                f4_t: "Reward System", 
+                f4_d: "Учись и зарабатывай. Получай Damu Coins за тесты и задания. Трать их на Premium-подписку, аватарки или бустеры опыта.",
+                t_title: "Наша Команда",
+                t_desc: "Мы — команда молодых инноваторов, объединенных общей целью: сделать цифровое потребление осознанным и продуктивным.",
+                tm1: "Лидер команды. Победитель кейс-чемпионатов и олимпиад по бизнесу. Обладает стратегическим видением и лидерскими качествами.",
+                tm2: "Технический разработчик. Специализируется на интеграции AI-моделей и разработке сложной архитектуры приложения.",
+                tm3: "Product Lead. Эксперт по взаимодействию с сообществом и развитию продукта. Отвечает за пользовательский опыт.",
+                tm4: "Data Analyst. Занимается анализом данных и обеспечением точности работы алгоритмов Damu AI.",
+                form_title: "Присоединяйся к сообществу",
+                form_desc: "Заполни форму, чтобы получить ранний доступ к бета-тестированию и стартовый бонус на свой счет.",
+                l_name: "ФИО", 
+                l_country: "Страна", 
+                l_age: "Возраст", 
+                l_email: "Почта", 
+                form_btn: "Зарегистрироваться",
+                success_title: "Вы успешно зарегистрированы!",
+                success_text: "Мы свяжемся с вами в ближайшее время. Добро пожаловать в Damu AI!",
+                footer: "© 2026 Damu AI Ecosystem. Global Student Initiative."
+            },
+            en: {
+                h_title: "Your time is your main <span style='color: var(--accent);'>capital.</span>",
+                h_desc: "Modern social networks are designed to capture your attention, but Damu AI gives control back to you. We build a bridge between entertainment and development, turning chaotic content consumption into a structured learning process. <br><br>Our mission is to help students and professionals worldwide leverage the power of AI to instantly absorb knowledge from videos, articles, and chats without giving up their familiar digital lifestyle.",
+                h_btn: "Explore Features",
+                h_team: "Our Team",
+                d_title: "How Damu AI works?",
+                d_desc: "We use advanced neural network algorithms to integrate learning into your daily digital life, making the process seamless and engaging.",
+                f1_t: "Video-to-Guide", 
+                f1_d: "Our AI analyzes any video (from Reels to YouTube lectures) and instantly creates a structured study guide. Instead of just watching, you get key takeaways, definitions, and practical tips.",
+                f2_t: "AI Focus Guard", 
+                f2_d: "Smart attention guardian. The system tracks social media time and gently suggests switching to an interactive quiz if you start 'doomscrolling' without purpose.",
+                f3_t: "Mini-Messenger", 
+                f3_d: "Connect with like-minded learners. The built-in messenger helps you find study partners. Stand out with unique avatars purchased with coins.",
+                f4_t: "Reward System", 
+                f4_d: "Learn and earn. Receive Damu Coins for tests and tasks. Spend them on Premium subscriptions, avatars, or experience boosters.",
+                t_title: "Our Team",
+                t_desc: "We are a team of young innovators united by a common goal: making digital consumption mindful and productive.",
+                tm1: "Team Leader. Winner of business case competitions and olympiads. Possesses strategic vision and leadership skills.",
+                tm2: "Technical Developer. Specializes in AI model integration and complex application architecture development.",
+                tm3: "Product Lead. Expert in community engagement and product growth. Responsible for user experience.",
+                tm4: "Data Analyst. Focused on data analysis and ensuring the accuracy of Damu AI algorithms.",
+                form_title: "Join the Community",
+                form_desc: "Fill out the form to get early access to beta testing and a starting bonus on your account.",
+                l_name: "Full Name", 
+                l_country: "Country", 
+                l_age: "Age", 
+                l_email: "Email", 
+                form_btn: "Register Now",
+                success_title: "Success!",
+                success_text: "You have been registered successfully. Welcome to Damu AI!",
+                footer: "© 2026 Damu AI Ecosystem. Global Student Initiative."
+            }
+        };
+
+        langTrigger.addEventListener('click', () => {
+            isEn = !isEn;
+            document.body.classList.toggle('is-en');
+            const l = isEn ? 'en' : 'ru';
+            
+            document.getElementById('hero-title').innerHTML = translations[l].h_title;
+            document.getElementById('hero-desc').innerHTML = translations[l].h_desc;
+            document.getElementById('hero-btn').innerText = translations[l].h_btn;
+            document.getElementById('hero-team-btn').innerText = translations[l].h_team;
+            
+            document.getElementById('d-title').innerText = translations[l].d_title;
+            document.getElementById('d-desc').innerText = translations[l].d_desc;
+            document.getElementById('f1-t').innerText = translations[l].f1_t; 
+            document.getElementById('f1-d').innerText = translations[l].f1_d;
+            document.getElementById('f2-t').innerText = translations[l].f2_t; 
+            document.getElementById('f2-d').innerText = translations[l].f2_d;
+            document.getElementById('f3-t').innerText = translations[l].f3_t; 
+            document.getElementById('f3-d').innerText = translations[l].f3_d;
+            document.getElementById('f4-t').innerText = translations[l].f4_t; 
+            document.getElementById('f4-d').innerText = translations[l].f4_d;
+
+            document.getElementById('t-title').innerText = translations[l].t_title;
+            document.getElementById('t-desc').innerText = translations[l].t_desc;
+            document.getElementById('tm1').innerText = translations[l].tm1;
+            document.getElementById('tm2').innerText = translations[l].tm2;
+            document.getElementById('tm3').innerText = translations[l].tm3;
+            document.getElementById('tm4').innerText = translations[l].tm4;
+
+            document.getElementById('form-title').innerText = translations[l].form_title;
+            document.getElementById('form-desc').innerText = translations[l].form_desc;
+            document.getElementById('l-name').innerText = translations[l].l_name;
+            document.getElementById('l-country').innerText = translations[l].l_country;
+            document.getElementById('l-age').innerText = translations[l].l_age;
+            document.getElementById('l-email').innerText = translations[l].l_email;
+            document.getElementById('form-btn').innerText = translations[l].form_btn;
+            
+            document.getElementById('success-title').innerText = translations[l].success_title;
+            document.getElementById('success-text').innerText = translations[l].success_text;
+
+            document.getElementById('footer-text').innerText = translations[l].footer;
+        });
+
+        // Форма отправки
+        const form = document.getElementById("damu-form");
+        const formContainer = document.getElementById("form-container");
+        const successMessage = document.getElementById("success-message");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const status = document.getElementById("form-btn");
+            const data = new FormData(event.target);
+            
+            status.innerText = isEn ? "Sending..." : "Отправка...";
+            status.disabled = true;
+
+            fetch(event.target.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    formContainer.style.display = "none";
+                    successMessage.style.display = "block";
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert("Ошибка при отправке. Попробуйте еще раз.");
+                }
+                status.disabled = false;
+                status.innerText = isEn ? "Register Now" : "Зарегистрироваться";
+            }).catch(error => {
+                alert("Ошибка сети. Проверьте интернет.");
+                status.disabled = false;
+                status.innerText = isEn ? "Register Now" : "Зарегистрироваться";
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
